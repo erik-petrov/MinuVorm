@@ -45,7 +45,7 @@ namespace MinuVorm
 			{
 				case "Small":
 					cin = new MyForm(5, 5);
-					cin.Size = new Size(100, 100);
+					cin.Size = new Size(300, 300);
 					cin.Show();
 					break;
 				case "Medium":

@@ -14,8 +14,10 @@ namespace MinuVorm
 		{
 			Label welcome = new Label
 			{
-				Text = "Welcome to cinema 'Amogus'",
+				Text = "Welcome to cinema \n'Amogus'",
+				Height = 75,
 				Dock = DockStyle.Top,
+				Font = new Font("Arial", 18),
 				TextAlign = ContentAlignment.TopCenter
 					
 			};
@@ -23,7 +25,8 @@ namespace MinuVorm
 			Button btn = new Button
 			{
 				Text = "Choose the cinema hall",
-				Location = new Point(80, this.Height / 2),
+				Location = new Point(4, this.Height / 2),
+				Font = new Font("Arial", 18),
 				AutoSize = true,
 				BackColor = Color.Red
 			};
