@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Mail;
 
 namespace MinuVorm
 {
@@ -15,12 +17,12 @@ namespace MinuVorm
 		readonly TableLayoutPanel tlp = new TableLayoutPanel();
 		readonly Button btn;
 		readonly int w, h;
-		readonly int _x, _y;
+		readonly int _x, _y, _size;
 		int[][] buttonArr;
 		List<string> aboutToBuy, bought;
 		public MyForm() {}
 		
-		public MyForm(int x, int y)
+		public MyForm(int x, int y, string film)
 		{
 			_x = x;
 			_y = y;
@@ -87,11 +89,14 @@ namespace MinuVorm
 			}
 		private void Buy(object sender, EventArgs e)
 		{
+			string emailTickets = "";
 			using (StreamWriter w = File.AppendText(@"../../bought.txt"))
 			{
 				//aboutToBuy.ForEach(x => { w.WriteLine(x[0]+","+x[1]+";"); });
-				aboutToBuy.ForEach(x => { w.WriteLine(x + ","); });
+				aboutToBuy.ForEach(x => { w.WriteLine(x + ","); emailTickets += x + ", "; });
 			}
+			emailTickets = emailTickets.Remove(emailTickets.Length - 2) + ".";
+			SendMail(emailTickets);
 			MyForm cin = new MyForm(_x, _y);
 			cin.Size = this.Size;
 			cin.Show();
@@ -107,6 +112,25 @@ namespace MinuVorm
 		private void ReDraw()
 		{
 
+		}
+		private void SendMail(string mail)
+		{
+			var smtpClient = new SmtpClient("smtp.gmail.com")
+			{
+				Port = 587,
+				Credentials = new NetworkCredential("programmeeriminetthk@gmail.com", "2.kuursus"),
+				EnableSsl = true,
+			};
+			var mailMessage = new MailMessage
+			{
+				From = new MailAddress("Cinema.Amogus@service.com"),
+				Subject = "Piletid",
+				Body = "<h1>Hello. I'm an automated cinema 'Amogus' service!</h1>\nThese are the tickets you've bought: \n<strong>" + mail + "</strong>",
+				IsBodyHtml = true,
+			};
+
+			mailMessage.To.Add(new MailAddress("programmeeriminetthk@gmail.com"));
+			smtpClient.Send(mailMessage);
 		}
 	}
 }

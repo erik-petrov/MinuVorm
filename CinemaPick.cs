@@ -41,25 +41,26 @@ namespace MinuVorm
 		private void Clicked(Object sender, EventArgs e)
 		{
 			Button btn = sender as Button;
+			//small - 1, medium - 2, big - 3, huge - 4
 			switch (btn.Text)
 			{
 				case "Small":
-					cin = new MyForm(5, 5);
+					cin = new MyForm(5, 5, film);
 					cin.Size = new Size(300, 300);
 					cin.Show();
 					break;
 				case "Medium":
-					cin = new MyForm(7, 7);
+					cin = new MyForm(7, 7, film);
 					cin.Size = new Size(500, 500);
 					cin.Show();
 					break;
 				case "Big":
-					cin = new MyForm(10, 10);
+					cin = new MyForm(10, 10, film);
 					cin.Size = new Size(500, 500);
 					cin.Show();
 					break;
 				case "Huge":
-					cin = new MyForm(20, 20);
+					cin = new MyForm(20, 20, film);
 					cin.Size = new Size(1000, 1000);
 					cin.Show();
 					break;
