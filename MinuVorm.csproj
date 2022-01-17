@@ -55,6 +55,12 @@
     <Compile Include="CinemaPick.Designer.cs">
       <DependentUpon>CinemaPick.cs</DependentUpon>
     </Compile>
+    <Compile Include="MoviePick.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MoviePick.Designer.cs">
+      <DependentUpon>MoviePick.cs</DependentUpon>
+    </Compile>
     <Compile Include="MyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +91,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="images\cinemaBG.png" />
+    <Content Include="images\farfromhome.jpg" />
+    <Content Include="images\nowayhome.jpg" />
+    <Content Include="images\seat.png" />
+    <Content Include="images\seatAvailable.png" />
+    <Content Include="images\seatOrang.png" />
+    <Content Include="images\seatTaken.png" />
+    <Content Include="images\universe.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

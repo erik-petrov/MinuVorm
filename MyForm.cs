@@ -16,14 +16,22 @@ namespace MinuVorm
 		readonly Button btn;
 		readonly int w, h;
 		readonly int _x, _y;
+		readonly string _movieName;
+		readonly Image seatTaken = Image.FromFile("../../images/seatTaken.png");
+		readonly Image seatAvailable = Image.FromFile("../../images/seatavailable.png");
+		readonly Image seatOrange = Image.FromFile("../../images/seatOrang.png");
 		int[][] buttonArr;
 		List<string> aboutToBuy, bought;
 		public MyForm() {}
 		
-		public MyForm(int x, int y)
+		public MyForm(int x, int y, string movieName)
 		{
+			_movieName = movieName;
 			_x = x;
 			_y = y;
+			seatOrange.Tag = "orang";
+			seatTaken.Tag = "taken";
+			seatAvailable.Tag = "green";
 			using (StreamWriter w = new StreamWriter("../../bought.txt", true)) { w.Write(""); }
 			using (StreamReader r = new StreamReader("../../bought.txt"))
 			{
@@ -63,13 +71,19 @@ namespace MinuVorm
 						{
 							Text = $"{i + 1};{j + 1}",
 							Name = $"{i + 1};{j + 1}",
-							BackColor = Color.LightGreen,
-							Dock = DockStyle.Fill
+							Font = new Font("Arial", 10),
+							Dock = DockStyle.Fill,
+							TextAlign = ContentAlignment.MiddleCenter,
+							BackgroundImage = seatAvailable,
+							BackgroundImageLayout = ImageLayout.Stretch,
+							FlatStyle = FlatStyle.Flat
 						};
+						btn.FlatAppearance.BorderColor = SystemColors.Control;
+						btn.FlatAppearance.BorderSize = 0;
 						btn.Click += TryBuy;
 						if (bought.Contains(btn.Name))
 						{
-							btn.BackColor = Color.Red;
+							btn.BackgroundImage = seatTaken;
 						} else buttonArr[i][j] = 0;
 						tlp.Controls.Add(btn, i, j);
 					}
@@ -92,21 +106,18 @@ namespace MinuVorm
 				//aboutToBuy.ForEach(x => { w.WriteLine(x[0]+","+x[1]+";"); });
 				aboutToBuy.ForEach(x => { w.WriteLine(x + ","); });
 			}
-			MyForm cin = new MyForm(_x, _y);
+			MyForm cin = new MyForm(_x, _y, _movieName);
 			cin.Size = this.Size;
 			cin.Show();
 			this.Close();
 		}
 		private void TryBuy(object sender, EventArgs e)
 		{
+			
 			Button btn = sender as Button;
-			if (btn.BackColor == Color.LightGreen) { btn.BackColor = Color.Orange; aboutToBuy.Add(btn.Name); }
-			else if (btn.BackColor == Color.Orange) { btn.BackColor = Color.LightGreen; aboutToBuy.Remove(btn.Name); }
+			if ((string)btn.BackgroundImage.Tag == "green") { btn.BackgroundImage = seatOrange; aboutToBuy.Add(btn.Name); }
+			else if ((string)btn.BackgroundImage.Tag == "orang") { btn.BackgroundImage = seatAvailable; aboutToBuy.Remove(btn.Name); }
 			//string[] btnCoords = btn.Name.Split(',');
-		}
-		private void ReDraw()
-		{
-
 		}
 	}
 }

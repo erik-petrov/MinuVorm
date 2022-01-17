@@ -12,47 +12,46 @@ namespace MinuVorm
 	{
 		public StartForm()
 		{
+			Image bg = Image.FromFile("../../images/cinemaBG.png");
+			this.BackgroundImage = Image.FromFile("../../images/cinemaBG.png");
+			this.BackgroundImageLayout = ImageLayout.Stretch;
+			this.FormBorderStyle = FormBorderStyle.FixedSingle;
+			this.Size = new Size(700, 500);
+			this.MaximizeBox = false;
 			Label welcome = new Label
 			{
-				Text = "Welcome to cinema \n'Amogus'",
-				Height = 75,
-				Dock = DockStyle.Top,
-				Font = new Font("Arial", 18),
-				TextAlign = ContentAlignment.TopCenter
-					
+				Text = "Welcome to cinema 'Amogus'",
+				Height = 100,
+				Width = 300,
+				TextAlign = ContentAlignment.MiddleCenter,
+				Font = new Font("Georgia", 22),
+				Location = new Point(200, 100),
+				BackColor = Color.Transparent
 			};
+            Console.WriteLine();
 			this.Controls.Add(welcome);
 			Button btn = new Button
 			{
 				Text = "Choose the cinema hall",
-				Location = new Point(4, this.Height / 2),
+				Location = new Point(194, this.Height / 2),
 				Font = new Font("Arial", 18),
-				AutoSize = true,
-				BackColor = Color.Red
+				Width = 300,
+				Height = 50,
+				//AutoSize = true,
+				ForeColor = Color.White,
+				BackColor = Color.DarkRed,
+				FlatStyle = FlatStyle.Flat
 			};
+			btn.FlatAppearance.BorderColor = SystemColors.Control;
+			btn.FlatAppearance.BorderSize = 0;
 			btn.Click += Btn_Click;
 			this.Controls.Add(btn);
-			/*Button btn2 = new Button
-			{
-				Text = "Choose the cinema hall",
-				Location = new Point(80, this.Height/2),
-				AutoSize = true,
-				BackColor = Color.Red
-			};
-			btn2.Click += Btn2_Click;
-			this.Controls.Add(btn2);*/
 		}
-		/*private void Btn2_Click(object sender, EventArgs e)
+        private void Btn_Click(object sender, EventArgs e)
 		{
-			MyForm frm = new MyForm(10,5);
-			frm.StartPosition = FormStartPosition.CenterScreen;
-			frm.ShowDialog();
-		}*/
-		private void Btn_Click(object sender, EventArgs e)
-		{
-			CinemaPick frm = new CinemaPick("Choose the hall", "", new string[4] {"Small", "Medium", "Big", "Huge" });
-			frm.StartPosition = FormStartPosition.CenterScreen;
-			frm.Show();
+			MoviePick mv = new MoviePick();
+			mv.StartPosition = FormStartPosition.CenterScreen;
+			mv.Show();
 		}
 	}
 }
