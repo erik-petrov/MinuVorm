@@ -9,6 +9,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.VisualBasic;
 
 namespace MinuVorm
 {
@@ -16,26 +17,36 @@ namespace MinuVorm
 	{
 		readonly TableLayoutPanel tlp = new TableLayoutPanel();
 		readonly Button btn;
+		MailMessage mailMessage;
+		SmtpClient smtpClient;
 		readonly int w, h;
 		readonly int _x, _y;
-		readonly string _movieName;
+		readonly string _movieName, _fileName;
+		string userMail;
 		readonly Image seatTaken = Image.FromFile("../../images/seatTaken.png");
 		readonly Image seatAvailable = Image.FromFile("../../images/seatavailable.png");
 		readonly Image seatOrange = Image.FromFile("../../images/seatOrang.png");
 		int[][] buttonArr;
 		List<string> aboutToBuy, bought;
+		string hallSize;
 		public MyForm() {}
 		
-		public MyForm(int x, int y, string movieName)
+		public MyForm(int x, int y, string movieName, string fileName = "")
 		{
 			_movieName = movieName;
 			_x = x;
 			_y = y;
+			_fileName = fileName;
 			seatOrange.Tag = "orang";
 			seatTaken.Tag = "taken";
 			seatAvailable.Tag = "green";
-			using (StreamWriter w = new StreamWriter("../../bought.txt", true)) { w.Write(""); }
-			using (StreamReader r = new StreamReader("../../bought.txt"))
+			if(_fileName == "")
+			{
+				_fileName = MakeFileName();
+			}
+			Console.WriteLine(_fileName);
+			using (StreamWriter w = new StreamWriter("../../tickets/" + _fileName, true)) { w.Write(""); }
+			using (StreamReader r = new StreamReader("../../tickets/"+ _fileName))
 			{
 				string[] tickets = r.ReadToEnd().Split(',');
 				bought = new List<string>();
@@ -95,58 +106,107 @@ namespace MinuVorm
 				h = (100 / y);
 				tlp.Size = new Size(tlp.ColumnCount * w * 2, tlp.RowCount * h * 2);
 				this.Controls.Add(tlp);
-
 				MainMenu mainMenu = new MainMenu();
 				MenuItem File = mainMenu.MenuItems.Add("&File");
 				File.MenuItems.Add(new MenuItem("&Buy", new EventHandler(this.Buy), Shortcut.CtrlS));
 				this.Menu = mainMenu;
 			}
+		private void GetMail()
+		{
+			userMail = Interaction.InputBox("Enter your email.", "Enter your email so we can send you the tickets you've bought.");
+		}
 		private void Buy(object sender, EventArgs e)
 		{
+			GetMail();
 			string emailTickets = "";
-			using (StreamWriter w = File.AppendText(@"../../bought.txt"))
+			using (StreamWriter w = File.AppendText(@"../../tickets/"+_fileName))
 			{
-				//aboutToBuy.ForEach(x => { w.WriteLine(x[0]+","+x[1]+";"); });
 				aboutToBuy.ForEach(x => { w.WriteLine(x + ","); emailTickets += x + ", "; });
 			}
 			emailTickets = emailTickets.Remove(emailTickets.Length - 2) + ".";
-			SendMail(emailTickets);
-			MyForm cin = new MyForm(_x, _y);
-			MyForm cin = new MyForm(_x, _y, _movieName);
-			cin.Size = this.Size;
-			cin.Show();
-			this.Close();
+			if (SendMail(emailTickets))
+			{
+				MyForm cin = new MyForm(_x, _y, _movieName, _fileName);
+				cin.Size = this.Size;
+				cin.Show();
+				this.Close();
+			}
+			
 		}
 		private void TryBuy(object sender, EventArgs e)
 		{
-			
 			Button btn = sender as Button;
 			if ((string)btn.BackgroundImage.Tag == "green") { btn.BackgroundImage = seatOrange; aboutToBuy.Add(btn.Name); }
 			else if ((string)btn.BackgroundImage.Tag == "orang") { btn.BackgroundImage = seatAvailable; aboutToBuy.Remove(btn.Name); }
 			//string[] btnCoords = btn.Name.Split(',');
 		}
-		private void ReDraw()
+		private bool SendMail(string mail)
 		{
+			try
+			{
+				smtpClient = new SmtpClient("smtp.gmail.com")
+				{
+					Port = 587,
+					Credentials = new NetworkCredential("programmeeriminetthk@gmail.com", "2.kuursus tarpv20"),
+					EnableSsl = true,
+				};
+				mailMessage = new MailMessage
+				{
+					From = new MailAddress("Cinema.Amogus@service.com"),
+					Subject = "Piletid",
+					Body = $"<h1>Hello. I'm an automated cinema 'Amogus' service!</h1>\n Tickets to the movie: <strong>{_movieName}</strong><br>" +
+					$"Hall: <strong>{hallSize}</strong><br>These are the tickets you've bought: \n<strong>{mail}</strong>",
+					IsBodyHtml = true,
+				};
 
+				mailMessage.To.Add(new MailAddress(userMail));
+				smtpClient.Send(mailMessage);
+				return true;
+			}
+			catch
+			{
+				MessageBox.Show("Invalid email.\nSent to another due to debugging.");
+				mailMessage.To.Add(new MailAddress("programmeeriminetthk@gmail.com"));
+				smtpClient.Send(mailMessage);
+				//change to false
+				return true;
+			}
 		}
-		private void SendMail(string mail)
+		private string MakeFileName()
 		{
-			var smtpClient = new SmtpClient("smtp.gmail.com")
+			string fileName = "";
+			switch (_movieName)
 			{
-				Port = 587,
-				Credentials = new NetworkCredential("programmeeriminetthk@gmail.com", "2.kuursus"),
-				EnableSsl = true,
-			};
-			var mailMessage = new MailMessage
+				case "Spiderman: No way home":
+					fileName += "spNwh";
+					break;
+				case "Spiderman: Far from home":
+					fileName += "spFfh";
+					break;
+				case "Spiderman: Into the Spider-Verse":
+					fileName += "spIsv";
+					break;
+			}
+			switch (_x)
 			{
-				From = new MailAddress("Cinema.Amogus@service.com"),
-				Subject = "Piletid",
-				Body = "<h1>Hello. I'm an automated cinema 'Amogus' service!</h1>\nThese are the tickets you've bought: \n<strong>" + mail + "</strong>",
-				IsBodyHtml = true,
-			};
-
-			mailMessage.To.Add(new MailAddress("programmeeriminetthk@gmail.com"));
-			smtpClient.Send(mailMessage);
+				case 5:
+					hallSize = "Small";
+					fileName += "s";
+					break;
+				case 7:
+					hallSize = "Medium";
+					fileName += "m";
+					break;
+				case 10:
+					hallSize = "Big";
+					fileName += "b";
+					break;
+				case 20:
+					hallSize = "Huge";
+					fileName += "h";
+					break;
+			}
+			return fileName+".txt";
 		}
 	}
 }

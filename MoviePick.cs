@@ -22,7 +22,7 @@ namespace MinuVorm
             movie3 = Image.FromFile("../../images/universe.jpg");
             PictureBox pb1 = new PictureBox
             {
-                Name = "No way home",
+                Name = "Spiderman: No way home",
                 Image = movie1,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 Width = 300,
@@ -31,7 +31,7 @@ namespace MinuVorm
             };
             PictureBox pb2 = new PictureBox
             {
-                Name = "Far from home",
+                Name = "Spiderman: Far from home",
                 Image = movie2,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 Width = 300,
@@ -40,7 +40,7 @@ namespace MinuVorm
             };
             PictureBox pb3 = new PictureBox
             {
-                Name = "Universe",
+                Name = "Spiderman: Into the Spider-Verse",
                 Image = movie3,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 Width = 300,
