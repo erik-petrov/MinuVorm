@@ -15,9 +15,11 @@ namespace MinuVorm
 		readonly Label msg = new Label();
 		readonly Button[] btnArr = new Button[4];
 		readonly string[] btnNames = new string[4];
+		readonly string _movieName;
 		MyForm cin;
-		public CinemaPick(string header, string text, string[] btns)
+		public CinemaPick(string header, string text, string[] btns, string movieName)
 		{
+			_movieName = movieName;
 			for (int i = 0; i < btnNames.Length; i++) { btnNames[i] = btns[i]; }
 			this.ClientSize = new Size(500, 100);
 			this.Text = header;
@@ -41,26 +43,25 @@ namespace MinuVorm
 		private void Clicked(Object sender, EventArgs e)
 		{
 			Button btn = sender as Button;
-			//small - 1, medium - 2, big - 3, huge - 4
 			switch (btn.Text)
 			{
 				case "Small":
-					cin = new MyForm(5, 5, film);
+					cin = new MyForm(5, 5, _movieName);
 					cin.Size = new Size(300, 300);
 					cin.Show();
 					break;
 				case "Medium":
-					cin = new MyForm(7, 7, film);
+					cin = new MyForm(7, 7, _movieName);
 					cin.Size = new Size(500, 500);
 					cin.Show();
 					break;
 				case "Big":
-					cin = new MyForm(10, 10, film);
+					cin = new MyForm(10, 10, _movieName);
 					cin.Size = new Size(500, 500);
 					cin.Show();
 					break;
 				case "Huge":
-					cin = new MyForm(20, 20, film);
+					cin = new MyForm(20, 20, _movieName);
 					cin.Size = new Size(1000, 1000);
 					cin.Show();
 					break;
