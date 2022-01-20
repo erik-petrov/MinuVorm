@@ -26,8 +26,8 @@ namespace MinuVorm
 		readonly Image seatTaken = Image.FromFile("../../images/seatTaken.png");
 		readonly Image seatAvailable = Image.FromFile("../../images/seatavailable.png");
 		readonly Image seatOrange = Image.FromFile("../../images/seatOrang.png");
-		int[][] buttonArr;
-		List<string> aboutToBuy, bought;
+		readonly int[][] buttonArr;
+		readonly List<string> aboutToBuy, bought;
 		string hallSize;
 		public MyForm() {}
 		

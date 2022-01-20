@@ -12,8 +12,7 @@ namespace MinuVorm
 {
     public partial class MoviePick : Form
     {
-        Image movie1, movie2, movie3;
-        PictureBox pb1, pb2, pb3;
+        readonly Image movie1, movie2, movie3;
         public MoviePick()
         {
             this.Size = new Size(900, 400);
@@ -47,15 +46,15 @@ namespace MinuVorm
                 Height = 361,
                 Location = new Point(600, 0),
             };
-            pb1.Click += Click;
-            pb2.Click += Click;
-            pb3.Click += Click;
+            pb1.Click += Choose;
+            pb2.Click += Choose;
+            pb3.Click += Choose;
             this.Controls.Add(pb1);
             this.Controls.Add(pb2);
             this.Controls.Add(pb3);
         }
 
-        private void Click(object sender, EventArgs e)
+        private void Choose(object sender, EventArgs e)
         {
             PictureBox pv = sender as PictureBox;
             CinemaPick frm = new CinemaPick("Choose the hall", "", new string[4] { "Small", "Medium", "Big", "Huge" }, pv.Name);
