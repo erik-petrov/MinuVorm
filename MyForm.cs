@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.VisualBasic;
 using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace MinuVorm
 {
@@ -31,18 +32,20 @@ namespace MinuVorm
 		readonly int[][] buttonArr;
 		readonly List<string> aboutToBuy, bought;
 		string hallSize;
-		SqlConnection connect;
+
+		string connStr = @"datasource=127.0.0.1;port=3306;username=root;password=;database=test;";
+		MySqlConnection dbConn;
+		MySqlCommand cmd;
+		MySqlDataReader reader;
+		/*SqlConnection connect;
 		SqlCommand order;
-		SqlDataAdapter adap;
+		SqlDataAdapter adap;*/
 		public MyForm(int x, int y, string movieName, string fileName = "")
 		{
 			_movieName = movieName;
 			_x = x;
 			_y = y;
 			_fileName = fileName;
-			conn = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" +
-				@"C:\Users\opilane\source\repos\MinuVorm\AppData\KinoDB.mdf;Integrated Security=True";
-			connect = new SqlConnection(conn);
 			seatOrange.Tag = "orang";
 			seatTaken.Tag = "taken";
 			seatAvailable.Tag = "green";
@@ -148,17 +151,6 @@ namespace MinuVorm
 		}
 		private bool SendMail(string mail)
 		{
-			connect.Open();
-			aboutToBuy.ForEach(x => {
-				string[] arr = x.Split(';');
-				order = new SqlCommand("insert into Piletid(x, y, filmID) values(@x, @y, @film)");
-				order.Connection = connect;
-				order.Parameters.AddWithValue("@x", Convert.ToInt32(arr[0]));
-				order.Parameters.AddWithValue("@y", Convert.ToInt32(arr[1]));
-				order.Parameters.AddWithValue("@film", 1);
-				order.ExecuteNonQuery();
-			});
-			connect.Close();
 			try
 			{
 				smtpClient = new SmtpClient("smtp.gmail.com")
@@ -225,5 +217,44 @@ namespace MinuVorm
 			}
 			return fileName+".txt";
 		}
+		private void AddToDB()
+        {
+			dbConn = new MySqlConnection(connStr);
+			cmd = new MySqlCommand("yes", dbConn);
+			/*connect.Open();
+			aboutToBuy.ForEach(x => {
+				string[] arr = x.Split(';');
+				order = new SqlCommand("insert into Piletid(x, y, filmID) values(@x, @y, @film)");
+				order.Connection = connect;
+				order.Parameters.AddWithValue("@x", Convert.ToInt32(arr[0]));
+				order.Parameters.AddWithValue("@y", Convert.ToInt32(arr[1]));
+				order.Parameters.AddWithValue("@film", 1);
+				order.ExecuteNonQuery();
+			});
+			connect.Close();*/
+		}
 	}
 }
+
+
+/*
+ create table Halls(
+    id int PRIMARY KEY AUTO_INCREMENT,
+    name varchar(15) not null,
+	x int not null,
+	y int not null);
+
+create table Films(
+    id int PRIMARY KEY AUTO_INCREMENT,
+    name varchar(15) not null,
+	pilt text not null);
+    
+create table tickets(
+    id int PRIMARY KEY AUTO_INCREMENT,
+    x int not null,
+    y int not null,
+    filmID int not null,
+    hallID int not null,
+	FOREIGN key(filmID) REFERENCES Films(id),
+    FOREIGN key(hallID) REFERENCES Halls(id));
+*/
