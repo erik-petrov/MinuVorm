@@ -8,10 +8,14 @@ using System.Windows.Forms;
 
 namespace MinuVorm
 {
-	class StartForm : MyForm
+	class StartForm : Form
 	{
 		public StartForm()
 		{
+			MainMenu mainMenu = new MainMenu();
+			MenuItem File = mainMenu.MenuItems.Add("&Admin");
+			File.MenuItems.Add(new MenuItem("&Open", new EventHandler(this.OpenAdmin), Shortcut.CtrlS));
+			this.Menu = mainMenu;
 			Image bg = Image.FromFile("../../images/cinemaBG.png");
 			this.BackgroundImage = Image.FromFile("../../images/cinemaBG.png");
 			this.BackgroundImageLayout = ImageLayout.Stretch;
@@ -52,6 +56,11 @@ namespace MinuVorm
 			MoviePick mv = new MoviePick();
 			mv.StartPosition = FormStartPosition.CenterScreen;
 			mv.Show();
+		}
+		private void OpenAdmin(object sender, EventArgs e)
+		{
+			Admin adm = new Admin();
+			adm.Show();
 		}
 	}
 }

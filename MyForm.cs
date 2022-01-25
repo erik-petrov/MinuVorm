@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Mail;
 using Microsoft.VisualBasic;
+using System.Data.SqlClient;
 
 namespace MinuVorm
 {
@@ -19,6 +20,7 @@ namespace MinuVorm
 		readonly Button btn;
 		MailMessage mailMessage;
 		SmtpClient smtpClient;
+		readonly string conn;
 		readonly int w, h;
 		readonly int _x, _y;
 		readonly string _movieName, _fileName;
@@ -29,14 +31,18 @@ namespace MinuVorm
 		readonly int[][] buttonArr;
 		readonly List<string> aboutToBuy, bought;
 		string hallSize;
-		public MyForm() {}
-		
+		SqlConnection connect;
+		SqlCommand order;
+		SqlDataAdapter adap;
 		public MyForm(int x, int y, string movieName, string fileName = "")
 		{
 			_movieName = movieName;
 			_x = x;
 			_y = y;
 			_fileName = fileName;
+			conn = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" +
+				@"C:\Users\opilane\source\repos\MinuVorm\AppData\KinoDB.mdf;Integrated Security=True";
+			connect = new SqlConnection(conn);
 			seatOrange.Tag = "orang";
 			seatTaken.Tag = "taken";
 			seatAvailable.Tag = "green";
@@ -142,6 +148,17 @@ namespace MinuVorm
 		}
 		private bool SendMail(string mail)
 		{
+			connect.Open();
+			aboutToBuy.ForEach(x => {
+				string[] arr = x.Split(';');
+				order = new SqlCommand("insert into Piletid(x, y, filmID) values(@x, @y, @film)");
+				order.Connection = connect;
+				order.Parameters.AddWithValue("@x", Convert.ToInt32(arr[0]));
+				order.Parameters.AddWithValue("@y", Convert.ToInt32(arr[1]));
+				order.Parameters.AddWithValue("@film", 1);
+				order.ExecuteNonQuery();
+			});
+			connect.Close();
 			try
 			{
 				smtpClient = new SmtpClient("smtp.gmail.com")
