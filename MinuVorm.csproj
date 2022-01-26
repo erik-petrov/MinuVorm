@@ -163,6 +163,7 @@
     <Folder Include="tickets\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cinema.sql" />
     <Content Include="images\cinemaBG.png" />
     <Content Include="images\farfromhome.jpg" />
     <Content Include="images\nowayhome.jpg" />

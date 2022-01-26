@@ -21,35 +21,40 @@ namespace MinuVorm
 		readonly Button btn;
 		MailMessage mailMessage;
 		SmtpClient smtpClient;
-		readonly string conn;
 		readonly int w, h;
-		readonly int _x, _y;
-		readonly string _movieName, _fileName;
+		readonly int _x, _y, movieID, hallID;
+		readonly string _movieName, _fileName, _hallSize;
 		string userMail;
 		readonly Image seatTaken = Image.FromFile("../../images/seatTaken.png");
 		readonly Image seatAvailable = Image.FromFile("../../images/seatavailable.png");
 		readonly Image seatOrange = Image.FromFile("../../images/seatOrang.png");
 		readonly int[][] buttonArr;
 		readonly List<string> aboutToBuy, bought;
-		string hallSize;
 
-		string connStr = @"datasource=127.0.0.1;port=3306;username=root;password=;database=test;";
+		string connStr = @"datasource=127.0.0.1;port=3306;username=root;password=;database=cinema;";
 		MySqlConnection dbConn;
 		MySqlCommand cmd;
 		MySqlDataReader reader;
 		/*SqlConnection connect;
 		SqlCommand order;
 		SqlDataAdapter adap;*/
-		public MyForm(int x, int y, string movieName, string fileName = "")
+		public MyForm(int x, int y, string movieName, string hallSize, string fileName = "")
 		{
 			_movieName = movieName;
+			_hallSize = hallSize;
+			dbConn = new MySqlConnection(connStr);
+			dbConn.Open();
+			movieID = FindID("films", _movieName);
+			hallID = FindID("halls", _hallSize);
+			if (movieID == 0 || hallID == 0) MessageBox.Show("Movie or Hall doesent exist in the DB."); this.Close();
 			_x = x;
 			_y = y;
 			_fileName = fileName;
 			seatOrange.Tag = "orang";
 			seatTaken.Tag = "taken";
 			seatAvailable.Tag = "green";
-			if(_fileName == "")
+			
+			if (_fileName == "")
 			{
 				_fileName = MakeFileName();
 			}
@@ -130,14 +135,15 @@ namespace MinuVorm
 			string emailTickets = "";
 			using (StreamWriter w = File.AppendText(@"../../tickets/"+_fileName))
 			{
-				aboutToBuy.ForEach(x => { w.WriteLine(x + ","); emailTickets += x + ", "; });
+				aboutToBuy.ForEach(x => { w.WriteLine(x + ","); emailTickets += x + ", "; AddToDB(x); });
 			}
 			emailTickets = emailTickets.Remove(emailTickets.Length - 2) + ".";
 			if (SendMail(emailTickets))
 			{
-				MyForm cin = new MyForm(_x, _y, _movieName, _fileName);
+				MyForm cin = new MyForm(_x, _y, _movieName, _hallSize, _fileName);
 				cin.Size = this.Size;
 				cin.Show();
+				dbConn.Close();
 				this.Close();
 			}
 			
@@ -164,7 +170,7 @@ namespace MinuVorm
 					From = new MailAddress("Cinema.Amogus@service.com"),
 					Subject = "Piletid",
 					Body = $"<h1>Hello. I'm an automated cinema 'Amogus' service!</h1>\n Tickets to the movie: <strong>{_movieName}</strong><br>" +
-					$"Hall: <strong>{hallSize}</strong><br>These are the tickets you've bought: \n<strong>{mail}</strong>",
+					$"Hall: <strong>{_hallSize}</strong><br>These are the tickets you've bought: \n<strong>{mail}</strong>",
 					IsBodyHtml = true,
 				};
 
@@ -196,42 +202,30 @@ namespace MinuVorm
 					fileName += "spIsv";
 					break;
 			}
-			switch (_x)
-			{
-				case 5:
-					hallSize = "Small";
-					fileName += "s";
-					break;
-				case 7:
-					hallSize = "Medium";
-					fileName += "m";
-					break;
-				case 10:
-					hallSize = "Big";
-					fileName += "b";
-					break;
-				case 20:
-					hallSize = "Huge";
-					fileName += "h";
-					break;
-			}
+			fileName += _hallSize.ToLower()[0];
 			return fileName+".txt";
 		}
-		private void AddToDB()
+		private void AddToDB(string coords)
         {
-			dbConn = new MySqlConnection(connStr);
-			cmd = new MySqlCommand("yes", dbConn);
-			/*connect.Open();
-			aboutToBuy.ForEach(x => {
-				string[] arr = x.Split(';');
-				order = new SqlCommand("insert into Piletid(x, y, filmID) values(@x, @y, @film)");
-				order.Connection = connect;
-				order.Parameters.AddWithValue("@x", Convert.ToInt32(arr[0]));
-				order.Parameters.AddWithValue("@y", Convert.ToInt32(arr[1]));
-				order.Parameters.AddWithValue("@film", 1);
-				order.ExecuteNonQuery();
-			});
-			connect.Close();*/
+			cmd = new MySqlCommand($"insert into tickets(x, y, filmID, hallID) values(@x, @y, {movieID}, {hallID})", dbConn);
+			cmd.Parameters.AddWithValue("@x", coords[0]);
+			cmd.Parameters.AddWithValue("@y", coords[1]);
+		}
+		private int FindID(string from, string name)
+		{
+			cmd = new MySqlCommand($"select id from `{from}` where name = '{name}'", dbConn);
+			Console.WriteLine(cmd.CommandText);
+			using (reader = cmd.ExecuteReader())
+			{
+				if (reader.HasRows)
+				{
+					reader.Read();
+					int id = reader.GetOrdinal("id");
+                    Console.WriteLine(id);
+					return id;
+				}
+				else return 0;
+			}
 		}
 	}
 }
@@ -246,7 +240,7 @@ namespace MinuVorm
 
 create table Films(
     id int PRIMARY KEY AUTO_INCREMENT,
-    name varchar(15) not null,
+    name varchar(70) not null unique,
 	pilt text not null);
     
 create table tickets(

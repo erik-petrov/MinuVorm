@@ -46,22 +46,22 @@ namespace MinuVorm
 			switch (btn.Text)
 			{
 				case "Small":
-					cin = new MyForm(5, 5, _movieName);
+					cin = new MyForm(5, 5, _movieName, btn.Text);
 					cin.Size = new Size(300, 300);
 					cin.Show();
 					break;
 				case "Medium":
-					cin = new MyForm(7, 7, _movieName);
+					cin = new MyForm(7, 7, _movieName, btn.Text);
 					cin.Size = new Size(500, 500);
 					cin.Show();
 					break;
 				case "Big":
-					cin = new MyForm(10, 10, _movieName);
+					cin = new MyForm(10, 10, _movieName, btn.Text);
 					cin.Size = new Size(500, 500);
 					cin.Show();
 					break;
 				case "Huge":
-					cin = new MyForm(20, 20, _movieName);
+					cin = new MyForm(20, 20, _movieName, btn.Text);
 					cin.Size = new Size(1000, 1000);
 					cin.Show();
 					break;
