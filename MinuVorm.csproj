@@ -68,7 +68,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MySql.Data, Version=8.0.28.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>packages\MySql.Data.8.0.28\lib\net452\MySql.Data.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\MySQL\Connector NET 8.0\Assemblies\v4.5.2\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -172,6 +172,36 @@
     <Content Include="images\seatOrang.png" />
     <Content Include="images\seatTaken.png" />
     <Content Include="images\universe.jpg" />
+    <Content Include="v4.5.2\BouncyCastle.Crypto.dll" />
+    <Content Include="v4.5.2\Google.Protobuf.dll" />
+    <Content Include="v4.5.2\K4os.Compression.LZ4.dll" />
+    <Content Include="v4.5.2\K4os.Compression.LZ4.Streams.dll" />
+    <Content Include="v4.5.2\K4os.Hash.xxHash.dll" />
+    <Content Include="v4.5.2\libzstd.dll" />
+    <Content Include="v4.5.2\MySql.Data.dll" />
+    <Content Include="v4.5.2\MySql.Data.EntityFramework.dll" />
+    <Content Include="v4.5.2\MySql.Data.EntityFramework.xml" />
+    <Content Include="v4.5.2\MySql.Data.xml" />
+    <Content Include="v4.5.2\MySql.Web.dll" />
+    <Content Include="v4.5.2\MySql.Web.xml" />
+    <Content Include="v4.5.2\System.Buffers.dll" />
+    <Content Include="v4.5.2\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="v4.5.2\Ubiety.Dns.Core.dll" />
+    <Content Include="v4.5.2\ZstdNet.dll" />
+    <Content Include="v4.8\BouncyCastle.Crypto.dll" />
+    <Content Include="v4.8\Google.Protobuf.dll" />
+    <Content Include="v4.8\K4os.Compression.LZ4.dll" />
+    <Content Include="v4.8\K4os.Compression.LZ4.Streams.dll" />
+    <Content Include="v4.8\K4os.Hash.xxHash.dll" />
+    <Content Include="v4.8\libzstd.dll" />
+    <Content Include="v4.8\MySql.Data.dll" />
+    <Content Include="v4.8\MySql.Data.xml" />
+    <Content Include="v4.8\MySql.Web.dll" />
+    <Content Include="v4.8\MySql.Web.xml" />
+    <Content Include="v4.8\System.Buffers.dll" />
+    <Content Include="v4.8\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="v4.8\Ubiety.Dns.Core.dll" />
+    <Content Include="v4.8\ZstdNet.dll" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

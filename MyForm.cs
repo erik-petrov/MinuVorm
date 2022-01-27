@@ -46,7 +46,7 @@ namespace MinuVorm
 			dbConn.Open();
 			movieID = FindID("films", _movieName);
 			hallID = FindID("halls", _hallSize);
-			if (movieID == 0 || hallID == 0) MessageBox.Show("Movie or Hall doesent exist in the DB."); this.Close();
+			if (movieID == 0 || hallID == 0) { MessageBox.Show("Movie or Hall doesent exist in the DB."); this.Close(); }
 			_x = x;
 			_y = y;
 			_fileName = fileName;
@@ -207,25 +207,23 @@ namespace MinuVorm
 		}
 		private void AddToDB(string coords)
         {
-			cmd = new MySqlCommand($"insert into tickets(x, y, filmID, hallID) values(@x, @y, {movieID}, {hallID})", dbConn);
+			cmd = new MySqlCommand($"insert into tickets(x, y, filmID, hallID) values(@x, @y, @movie, @hall)", dbConn);
 			cmd.Parameters.AddWithValue("@x", coords[0]);
-			cmd.Parameters.AddWithValue("@y", coords[1]);
+			cmd.Parameters.AddWithValue("@y", coords[2]);
+			cmd.Parameters.AddWithValue("@movie", movieID);
+			cmd.Parameters.AddWithValue("@hall", hallID);
+			cmd.ExecuteNonQuery();
 		}
 		private int FindID(string from, string name)
 		{
 			cmd = new MySqlCommand($"select id from `{from}` where name = '{name}'", dbConn);
-			Console.WriteLine(cmd.CommandText);
-			using (reader = cmd.ExecuteReader())
+			object result = cmd.ExecuteScalar();
+			if (result != null)
 			{
-				if (reader.HasRows)
-				{
-					reader.Read();
-					int id = reader.GetOrdinal("id");
-                    Console.WriteLine(id);
-					return id;
-				}
-				else return 0;
+				Console.WriteLine(Convert.ToInt32(result));
+				return Convert.ToInt32(result);
 			}
+			return 0;
 		}
 	}
 }
