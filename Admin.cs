@@ -61,7 +61,6 @@ namespace MinuVorm
 			//halls
 			//
 			adap = new MySqlDataAdapter();
-
 			DataTable hallsT = new DataTable();
 			dgvH = new DataGridView();
 			dgvH.Location = new Point(170, 50);
@@ -76,7 +75,6 @@ namespace MinuVorm
 			hSource.DataSource = hallsT;
 			dgvH.DataSource = hSource;
             dgvH.SelectionChanged += DgvH_SelectionChanged;
-
 			hallsL = new Label
 			{
 				Location = new Point(30, 50),
@@ -253,7 +251,7 @@ namespace MinuVorm
 				Location = new Point(200, 220),
 				Text = "Delete a movie",
 				AutoSize = true,
-				Name = "movies"
+				Name = "films"
 			};
 			deleteF.Click += DeleteRow;
 			movies.Controls.Add(deleteF);
@@ -313,10 +311,11 @@ namespace MinuVorm
 					cmd = new MySqlCommand($"delete from {btn.Name} where id = @id", dbConn);
 					cmd.Parameters.AddWithValue("@id", dgvH.SelectedRows[0].Cells[0].Value);
 					break;
+				default:
+					break;
 			}
 			cmd.ExecuteNonQuery();
 		}
-
         private void DgvH_SelectionChanged(object sender, EventArgs e)
         {
 			DataGridView dgv = sender as DataGridView;
@@ -328,7 +327,6 @@ namespace MinuVorm
 				ey.Value = (int)dgv.SelectedRows[0].Cells[3].Value;
 			}
 		}
-
         private void DgvF_SelectionChanged(object sender, EventArgs e)
         {
 			DataGridView dgv = sender as DataGridView;
@@ -339,7 +337,6 @@ namespace MinuVorm
 				editPiltTB.Text = dgv.SelectedRows[0].Cells[2].Value.ToString();
 			}
 		}
-
         private void dvgDataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
 		{
 			var height = 20;
@@ -394,7 +391,6 @@ namespace MinuVorm
 					break;
 			}
 			cmd.ExecuteNonQuery();
-            
         }
 			//TODO: make a movie/hall from the table and etc jadajadajada
 	}
