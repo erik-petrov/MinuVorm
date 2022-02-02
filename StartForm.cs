@@ -16,7 +16,6 @@ namespace MinuVorm
 			MenuItem File = mainMenu.MenuItems.Add("&Admin");
 			File.MenuItems.Add(new MenuItem("&Open", new EventHandler(this.OpenAdmin), Shortcut.CtrlS));
 			this.Menu = mainMenu;
-			Image bg = Image.FromFile("../../images/cinemaBG.png");
 			this.BackgroundImage = Image.FromFile("../../images/cinemaBG.png");
 			this.BackgroundImageLayout = ImageLayout.Stretch;
 			this.FormBorderStyle = FormBorderStyle.FixedSingle;

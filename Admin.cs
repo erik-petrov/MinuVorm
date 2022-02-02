@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,12 +25,13 @@ namespace MinuVorm
 		MySqlCommand cmd;
 		MySqlDataAdapter adap;
 		DataGridView dgvH, dgvF, dgvT;
+		PictureBox picture;
 		public Admin()
 		{
 			dbConn = new MySqlConnection(connStr);
 			dbConn.Open();
 			this.FormClosing += (s, e) => dbConn.Close();
-			this.Size = new Size(800,350);
+			this.Size = new Size(1000,350);
 			//
 			//tabs
 			//
@@ -253,7 +257,15 @@ namespace MinuVorm
 				AutoSize = true,
 				Name = "films"
 			};
+			picture = new PictureBox
+			{
+				Location = new Point(800, 40),
+				Size = new Size(100, 200),
+				Image = null,
+				SizeMode = PictureBoxSizeMode.StretchImage
+			};
 			deleteF.Click += DeleteRow;
+			movies.Controls.Add(picture);
 			movies.Controls.Add(deleteF);
 			movies.Controls.Add(send);
 			movies.Controls.Add(name);
@@ -291,9 +303,9 @@ namespace MinuVorm
 			Int32 selectedRowCount = dgv.Rows.GetRowCount(DataGridViewElementStates.Selected);
 			if (selectedRowCount > 0)
 			{
-				/*editHallsTB.Text = dgv.SelectedRows[0].Cells[1].Value.ToString();
+				editHallsTB.Text = dgv.SelectedRows[0].Cells[1].Value.ToString();
 				ex.Value = (int)dgv.SelectedRows[0].Cells[2].Value;
-				ey.Value = (int)dgv.SelectedRows[0].Cells[3].Value;*/
+				ey.Value = (int)dgv.SelectedRows[0].Cells[3].Value;
 			}
 		}
         private void DeleteRow(object sender, EventArgs e)
@@ -335,6 +347,7 @@ namespace MinuVorm
 			{
 				editFilmTB.Text = dgv.SelectedRows[0].Cells[1].Value.ToString();
 				editPiltTB.Text = dgv.SelectedRows[0].Cells[2].Value.ToString();
+				picture.Image = SaveImage(editPiltTB.Text, "movie", ImageFormat.Png);
 			}
 		}
         private void dvgDataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -392,6 +405,22 @@ namespace MinuVorm
 			}
 			cmd.ExecuteNonQuery();
         }
-			//TODO: make a movie/hall from the table and etc jadajadajada
+		public Bitmap SaveImage(string imageUrl, string filename, ImageFormat format)
+		{
+			try{Uri url = new Uri(imageUrl);} catch { return null; }
+			WebClient client = new WebClient();
+			Stream stream; stream = client.OpenRead(imageUrl);
+			Bitmap bitmap; bitmap = new Bitmap(stream);
+
+			stream.Flush();
+			stream.Close();
+			client.Dispose();
+			if (bitmap != null)
+			{
+				return bitmap;
+			}
+			return null;
+		}
+		//TODO: make a movie/hall from the table and etc jadajadajada
 	}
 }

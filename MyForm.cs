@@ -40,6 +40,7 @@ namespace MinuVorm
 		SqlDataAdapter adap;*/
 		public MyForm(int x, int y, string movieName, string hallSize, string fileName = "")
 		{
+			this.Name = "Choose the seats!";
 			_movieName = movieName;
 			_hallSize = hallSize;
 			dbConn = new MySqlConnection(connStr);
@@ -53,8 +54,8 @@ namespace MinuVorm
 			seatOrange.Tag = "orang";
 			seatTaken.Tag = "taken";
 			seatAvailable.Tag = "green";
-			
-			if (_fileName == "")
+			bought = LoadBought();
+			/*if (_fileName == "")
 			{
 				_fileName = MakeFileName();
 			}
@@ -71,7 +72,7 @@ namespace MinuVorm
 					bought.Add(temp);
 				}
 				Console.WriteLine(bought.Contains("1;1"));
-			}
+			}*/
 				aboutToBuy = new List<string>();
 				buttonArr = new int[x][];
 				tlp.ColumnCount = x;
@@ -125,6 +126,18 @@ namespace MinuVorm
 				File.MenuItems.Add(new MenuItem("&Buy", new EventHandler(this.Buy), Shortcut.CtrlS));
 				this.Menu = mainMenu;
 			}
+		private List<string> LoadBought()
+		{
+			List<string> list = new List<string>();
+			cmd = new MySqlCommand($"select x, y, filmID from `tickets`", dbConn);
+			reader = cmd.ExecuteReader();
+			while (reader.Read())
+			{
+				list.Add(reader["x"] + ";" + reader["y"]);
+			}
+			reader.Close();
+			return list;
+		}
 		private void GetMail()
 		{
 			userMail = Interaction.InputBox("Enter your email.", "Enter your email so we can send you the tickets you've bought.");
@@ -133,10 +146,7 @@ namespace MinuVorm
 		{
 			GetMail();
 			string emailTickets = "";
-			using (StreamWriter w = File.AppendText(@"../../tickets/"+_fileName))
-			{
-				aboutToBuy.ForEach(x => { w.WriteLine(x + ","); emailTickets += x + ", "; AddToDB(x); });
-			}
+			aboutToBuy.ForEach(x => { emailTickets += x + ", "; AddToDB(x); });
 			emailTickets = emailTickets.Remove(emailTickets.Length - 2) + ".";
 			if (SendMail(emailTickets))
 			{
@@ -162,7 +172,7 @@ namespace MinuVorm
 				smtpClient = new SmtpClient("smtp.gmail.com")
 				{
 					Port = 587,
-					Credentials = new NetworkCredential("programmeeriminetthk@gmail.com", "2.kuursus tarpv20"),
+					Credentials = new NetworkCredential("programmeeriminetthk2@gmail.com", "2.kuursus tarpv20"),
 					EnableSsl = true,
 				};
 				mailMessage = new MailMessage
@@ -186,24 +196,6 @@ namespace MinuVorm
 				//change to false
 				return true;
 			}
-		}
-		private string MakeFileName()
-		{
-			string fileName = "";
-			switch (_movieName)
-			{
-				case "Spiderman: No way home":
-					fileName += "spNwh";
-					break;
-				case "Spiderman: Far from home":
-					fileName += "spFfh";
-					break;
-				case "Spiderman: Into the Spider-Verse":
-					fileName += "spIsv";
-					break;
-			}
-			fileName += _hallSize.ToLower()[0];
-			return fileName+".txt";
 		}
 		private void AddToDB(string coords)
         {
